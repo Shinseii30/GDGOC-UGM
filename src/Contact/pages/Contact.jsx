@@ -1,54 +1,28 @@
 import { useState } from 'react'
-import { ArrowUpRight, ArrowRight, Plus, Diamond, HelpCircle } from 'lucide-react'
+import { ArrowUpRight, ArrowRight } from 'lucide-react'
 import Eyebrow from '../../landing/components/Eyebrow'
 import { TextLink } from '../../landing/components/Button'
-
-const topics = [
-  {
-    id: 'joining',
-    icon: <ArrowUpRight size={16} />,
-    title: 'Joining & learning',
-    desc: 'Getting started, learning tracks, and participation',
-  },
-  {
-    id: 'collaboration',
-    icon: <Plus size={16} />,
-    title: 'Collaboration',
-    desc: 'Community activities and shared ideas',
-  },
-  {
-    id: 'speaking',
-    icon: <Diamond size={14} />,
-    title: 'Speaking & sharing',
-    desc: 'Workshops, knowledge sharing, and mentorship',
-  },
-  {
-    id: 'general',
-    icon: <HelpCircle size={16} />,
-    title: 'General inquiry',
-    desc: "Anything else you'd like to ask",
-  },
-]
-
-const categoryOptions = [
-  'Joining & learning',
-  'Collaboration',
-  'Speaking & sharing',
-  'General inquiry',
-]
+import Loadable, { Skeleton } from '../../landing/components/Loadable'
+import { useApi } from '../../lib/useApi'
 
 export default function Contact() {
-  const [selectedTopic, setSelectedTopic] = useState('joining')
+  const categoriesApi = useApi('/inquiry-categories')
+  const statsApi = useApi('/stats')
+  // Satu state untuk daftar topik di kiri dan dropdown "Inquiry category" di form.
+  // Selama belum dipilih, kategori pertama dari API dipakai sebagai default.
+  const [categoryId, setCategoryId] = useState(null)
   const [agreed, setAgreed] = useState(false)
   const [form, setForm] = useState({
     firstName: '',
     lastName: '',
     email: '',
     university: '',
-    category: 'Joining & learning',
     subject: '',
     message: '',
   })
+
+  const activeCategory = categoryId ?? categoriesApi.data?.[0]?.id ?? ''
+  const instagram = statsApi.data?.social?.instagram ?? '@gdgoc.ugm'
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value })
@@ -79,29 +53,34 @@ export default function Contact() {
           </p>
 
           <ul className="mt-5 space-y-2">
-            {topics.map((t) => {
-              const active = selectedTopic === t.id
-              return (
-                <li key={t.id}>
-                  <button
-                    onClick={() => setSelectedTopic(t.id)}
-                    className={`w-full rounded-xl border px-4 py-3 text-left transition-colors ${
-                      active
-                        ? 'border-brand bg-brand-soft'
-                        : 'border-line bg-white hover:bg-surface'
-                    }`}
-                  >
-                    <div className="flex items-center gap-2">
-                      <span className={active ? 'text-brand' : 'text-muted'}>
-                        {t.icon}
-                      </span>
-                      <span className="text-sm font-medium">{t.title}</span>
-                    </div>
-                    <p className="mt-0.5 pl-6 text-xs text-muted">{t.desc}</p>
-                  </button>
-                </li>
-              )
-            })}
+            <Loadable state={categoriesApi} skeleton={<Skeleton count={4} className="h-16 rounded-xl" />}>
+              {(categories) =>
+                categories.map((c) => {
+                  const active = activeCategory === c.id
+                  return (
+                    <li key={c.id}>
+                      <button
+                        type="button"
+                        onClick={() => setCategoryId(c.id)}
+                        className={`w-full rounded-xl border px-4 py-3 text-left transition-colors ${
+                          active
+                            ? 'border-brand bg-brand-soft'
+                            : 'border-line bg-white hover:bg-surface'
+                        }`}
+                      >
+                        <div className="flex items-center gap-2">
+                          <span className={`w-4 text-center text-sm leading-none ${active ? 'text-brand' : 'text-muted'}`}>
+                            {c.icon}
+                          </span>
+                          <span className="text-sm font-medium">{c.label}</span>
+                        </div>
+                        <p className="mt-0.5 pl-6 text-xs text-muted">{c.description}</p>
+                      </button>
+                    </li>
+                  )
+                })
+              }
+            </Loadable>
           </ul>
 
           {/* Community updates card */}
@@ -114,11 +93,11 @@ export default function Contact() {
             </h3>
             <p className="mt-2 text-sm text-muted">
               Follow{' '}
-              <span className="font-medium text-ink">@gdgoc.ugm</span> for
+              <span className="font-medium text-ink">{instagram}</span> for
               learning opportunities and what's happening in the community.
             </p>
-            <TextLink href="https://instagram.com/gdgoc.ugm" className="mt-3">
-              Find @gdgoc.ugm
+            <TextLink href={`https://instagram.com/${instagram.replace(/^@/, '')}`} className="mt-3">
+              Find {instagram}
             </TextLink>
           </div>
         </div>
@@ -206,12 +185,15 @@ export default function Contact() {
               </label>
               <select
                 name="category"
-                value={form.category}
-                onChange={handleChange}
+                value={activeCategory}
+                onChange={(e) => setCategoryId(e.target.value)}
+                disabled={!categoriesApi.data}
                 className="w-full rounded-lg border border-line px-3 py-2 text-sm text-ink focus:border-brand focus:outline-none"
               >
-                {categoryOptions.map((o) => (
-                  <option key={o}>{o}</option>
+                {categoriesApi.data?.map((c) => (
+                  <option key={c.id} value={c.id}>
+                    {c.label}
+                  </option>
                 ))}
               </select>
             </div>

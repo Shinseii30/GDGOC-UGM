@@ -1,93 +1,26 @@
 import { BookOpen, Code2, Users, Lightbulb } from 'lucide-react'
 import Eyebrow from '../../landing/components/Eyebrow'
 import Button, { TextLink } from '../../landing/components/Button'
+import TrackCard from '../../landing/components/TrackCard'
+import Loadable, { Skeleton } from '../../landing/components/Loadable'
+import { useApi } from '../../lib/useApi'
 import trackResearch from '../../assets/Glass track artwork.png'
-import trackDesign from '../../assets/Glass track artwork 2.png'
-import trackDev from '../../assets/Glass track artwork 3.png'
 
 /* ── data ──────────────────────────────────────────────── */
-const tabs = [
-  { id: 'all', label: 'All tracks' },
-  { id: 'research', label: 'Research & discovery' },
-  { id: 'design', label: 'Design & creativity' },
-  { id: 'development', label: 'Development' },
-]
-
-const tracks = [
-  {
-    id: 'research',
-    kicker: 'Explore',
-    title: 'Research & discovery',
-    desc: 'Ask better questions, understand people, and turn insight into a clear problem worth solving.',
-    tags: 'Problem framing · User research · Product thinking',
-    image: trackResearch,
-    gradientFrom: '#bfdbfe',
-    gradientTo: '#eff6ff',
-    explore: 'Learn to frame problems, conduct user interviews, and translate findings into actionable insights.',
-    outcome: 'You can present your findings, propose a solution, and explain your process.',
-  },
-  {
-    id: 'design',
-    kicker: 'Make it meaningful',
-    title: 'Design & creativity',
-    desc: 'Translate ideas into thoughtful experiences, from a first sketch to a prototype people can use.',
-    tags: 'UI/UX · Visual storytelling · Prototyping',
-    image: trackDesign,
-    gradientFrom: '#fde68a',
-    gradientTo: '#fefce8',
-    explore: 'Master the basics of UI/UX, build visual systems, and design interactive prototypes.',
-    outcome: 'You can present a prototype, explain your design decisions, and iterate on feedback.',
-  },
-  {
-    id: 'development',
-    kicker: 'Bring ideas to life',
-    title: 'Development',
-    desc: 'Learn the tools, write the code, and build useful things with people who enjoy figuring it out.',
-    tags: 'Web & mobile · Cloud · AI foundations',
-    image: trackDev,
-    gradientFrom: '#bbf7d0',
-    gradientTo: '#f0fdf4',
-    explore: 'Get hands-on with web development, cloud tools, and the building blocks of AI.',
-    outcome: 'You can build and deploy a working project, and explain the choices behind it.',
-  },
-]
-
-const formats = [
-  {
-    icon: <BookOpen size={18} />,
-    title: 'Study groups',
-    desc: 'Learn through conversation. Work through topics together, ask questions, and build understanding side by side.',
-    link: 'Join a study group',
-  },
-  {
-    icon: <Code2 size={18} />,
-    title: 'Hands-on workshops',
-    desc: 'Get direct exposure to tools and techniques in focused, practical sessions led by community members.',
-    link: 'Find a workshop',
-  },
-  {
-    icon: <Users size={18} />,
-    title: 'Project circles',
-    desc: 'Connect research, design, and development by working on shared projects alongside others from different tracks.',
-    link: 'Explore project-based learning',
-  },
-  {
-    icon: <Lightbulb size={18} />,
-    title: 'Knowledge sharing',
-    desc: "Present what you've learned, explain what clicked, or share a resource that helped you move forward.",
-    link: 'Share something you know',
-  },
-]
-
-const steps = [
-  { no: '01', title: 'Discover', desc: 'Explore the tracks. Find a topic that sparks your interest and gives you something to pursue.' },
-  { no: '02', title: 'Practice', desc: 'Join a learning format. Try something, ask a question, and build on what you hear from others.' },
-  { no: '03', title: 'Build', desc: "Apply what you've learned to a project. It doesn't have to be perfect — it has to be real." },
-  { no: '04', title: 'Share', desc: 'Pass something on. Teach, explain, or contribute to what someone else is working on.' },
-]
+// Ikon lucide dipetakan dari id format (API hanya mengirim emoji).
+const formatIcons = {
+  'study-groups': BookOpen,
+  'hands-on-workshops': Code2,
+  'project-circles': Users,
+  'knowledge-sharing': Lightbulb,
+}
 
 /* ── component ──────────────────────────────────────────── */
 export default function Overview() {
+  const tracksApi = useApi('/tracks')
+  const formatsApi = useApi('/formats')
+  const journeyApi = useApi('/journey')
+
   return (
     <>
       {/* ── Hero ── */}
@@ -144,7 +77,7 @@ export default function Overview() {
 
       {/* ── Tracks section ── */}
       <section className="mx-auto max-w-6xl px-6 py-14">
-        <Eyebrow>Three tracks available</Eyebrow>
+        <Eyebrow>{tracksApi.data ? `${tracksApi.data.length} tracks available` : 'Tracks available'}</Eyebrow>
         <h2 className="max-w-md text-4xl font-bold leading-tight tracking-tight">
           Three ways in. Plenty of ways forward.
         </h2>
@@ -155,75 +88,42 @@ export default function Overview() {
 
         {/* Track cards */}
         <div className="mt-8 grid gap-5 md:grid-cols-3">
-          {tracks.map((t) => (
-            <article
-              key={t.id}
-              className="rounded-2xl border border-line bg-white"
-              style={{ overflow: 'visible', position: 'relative' }}
-            >
-              <div
-                style={{
-                  background: `linear-gradient(to bottom, ${t.gradientFrom}, ${t.gradientTo})`,
-                  borderRadius: '16px 16px 0 0',
-                  height: '220px',
-                  position: 'relative',
-                  overflow: 'visible',
-                }}
-              >
-                <img
-                  src={t.image}
-                  alt=""
-                  style={{
-                    position: 'absolute',
-                    top: '-28px',
-                    left: '50%',
-                    transform: 'translateX(-50%)',
-                    width: '110%',
-                    height: 'auto',
-                    objectFit: 'contain',
-                  }}
-                />
-              </div>
-              <div className="p-5">
-                <p className="text-[10px] font-medium uppercase tracking-wider text-brand">{t.kicker}</p>
-                <h3 className="mt-2 text-xl font-semibold">{t.title}</h3>
-                <p className="mt-2 text-sm text-muted">{t.desc}</p>
-                <p className="mt-4 border-t border-line pt-3 text-[11px] text-muted">{t.tags}</p>
-                <TextLink className="mt-3">Explore this track</TextLink>
-              </div>
-            </article>
-          ))}
+          <Loadable state={tracksApi} skeleton={<Skeleton count={3} className="h-96 rounded-2xl" />}>
+            {(tracks) => tracks.map((t) => <TrackCard key={t.id} track={t} />)}
+          </Loadable>
         </div>
 
         {/* Comparison table */}
-        <div className="mt-14">
-          <h3 className="text-2xl font-bold tracking-tight">
-            From an interest to something you can show.
-          </h3>
-          <div className="mt-6 overflow-hidden rounded-2xl border border-line">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-line bg-surface text-left text-xs font-medium uppercase tracking-wider text-muted">
-                  <th className="px-5 py-3 w-1/4">Track</th>
-                  <th className="px-5 py-3 w-2/5">What you explore</th>
-                  <th className="px-5 py-3">What you can show</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-line bg-white">
-                {tracks.map((t) => (
-                  <tr key={t.id}>
-                    <td className="px-5 py-4 font-medium">{t.title}</td>
-                    <td className="px-5 py-4 text-muted">{t.explore}</td>
-                    <td className="px-5 py-4 text-muted">{t.outcome}</td>
+        {tracksApi.data && (
+          <div className="mt-14">
+            <h3 className="text-2xl font-bold tracking-tight">
+              From an interest to something you can show.
+            </h3>
+            <div className="mt-6 overflow-hidden rounded-2xl border border-line">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-line bg-surface text-left text-xs font-medium uppercase tracking-wider text-muted">
+                    <th className="px-5 py-3 w-1/4">Track</th>
+                    <th className="px-5 py-3 w-2/5">What you explore</th>
+                    <th className="px-5 py-3">What you do</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody className="divide-y divide-line bg-white">
+                  {tracksApi.data.map((t) => (
+                    <tr key={t.id}>
+                      <td className="px-5 py-4 font-medium">{t.name}</td>
+                      <td className="px-5 py-4 text-muted">{t.skills.join(', ')}</td>
+                      <td className="px-5 py-4 text-muted">{t.what_you_do}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <p className="mt-3 text-xs text-muted">
+              Tracks overlap by design. Research informs design. Design guides development. Development opens new questions.
+            </p>
           </div>
-          <p className="mt-3 text-xs text-muted">
-            Tracks overlap by design. Research informs design. Design guides development. Development opens new questions.
-          </p>
-        </div>
+        )}
       </section>
 
       {/* ── Format section ── */}
@@ -238,14 +138,23 @@ export default function Overview() {
           </p>
 
           <div className="mt-8 grid gap-5 sm:grid-cols-2">
-            {formats.map((f) => (
-              <div key={f.title} className="rounded-2xl border border-line bg-white p-6">
-                <span className="text-brand">{f.icon}</span>
-                <h3 className="mt-4 font-semibold">{f.title}</h3>
-                <p className="mt-2 text-sm text-muted">{f.desc}</p>
-                <TextLink className="mt-4">{f.link}</TextLink>
-              </div>
-            ))}
+            <Loadable state={formatsApi} skeleton={<Skeleton count={4} className="h-44 rounded-2xl" />}>
+              {(formats) =>
+                formats.map((f) => {
+                  const Icon = formatIcons[f.id] ?? BookOpen
+                  return (
+                    <div key={f.id} className="rounded-2xl border border-line bg-white p-6">
+                      <span className="text-brand">
+                        <Icon size={18} />
+                      </span>
+                      <h3 className="mt-4 font-semibold">{f.name}</h3>
+                      <p className="mt-2 text-sm text-muted">{f.description}</p>
+                      <TextLink className="mt-4">{f.cta}</TextLink>
+                    </div>
+                  )
+                })
+              }
+            </Loadable>
           </div>
         </div>
       </section>
@@ -257,15 +166,19 @@ export default function Overview() {
         </h2>
 
         <div className="mt-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
-          {steps.map((s) => (
-            <div key={s.no}>
-              <p className="text-4xl font-semibold text-brand">{s.no}</p>
-              <div className="mt-3 border-t border-line pt-3">
-                <h3 className="font-semibold">{s.title}</h3>
-                <p className="mt-1 text-sm text-muted">{s.desc}</p>
-              </div>
-            </div>
-          ))}
+          <Loadable state={journeyApi} skeleton={<Skeleton count={4} className="h-28 rounded-xl" />}>
+            {(steps) =>
+              steps.map((s) => (
+                <div key={s.id}>
+                  <p className="text-4xl font-semibold text-brand">{String(s.step).padStart(2, '0')}</p>
+                  <div className="mt-3 border-t border-line pt-3">
+                    <h3 className="font-semibold">{s.title}</h3>
+                    <p className="mt-1 text-sm text-muted">{s.description}</p>
+                  </div>
+                </div>
+              ))
+            }
+          </Loadable>
         </div>
       </section>
 
@@ -312,4 +225,3 @@ export default function Overview() {
     </>
   )
 }
-

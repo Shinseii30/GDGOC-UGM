@@ -1,8 +1,20 @@
+import { Link } from 'react-router-dom'
 import logoImg from '../../assets/Rectangle.png'
+import { useApi } from '../../lib/useApi'
 
-const explore = ['Home', 'About', 'Overview', 'Contact']
+const fallbackExplore = [
+  { label: 'Home', href: '/' },
+  { label: 'About', href: '/about' },
+  { label: 'Overview', href: '/overview' },
+  { label: 'Contact', href: '/contact' },
+]
 
 export default function Footer() {
+  const { data: explore } = useApi('/navigation', { fallback: fallbackExplore })
+  const { data: stats } = useApi('/stats')
+  const instagram = stats?.social?.instagram ?? '@gdgoc.ugm'
+  const tagline = stats?.tagline ?? 'Learn together. Build together.'
+
   return (
     <footer className="border-t border-line">
       <div className="mx-auto grid max-w-6xl gap-10 px-6 py-14 md:grid-cols-[2fr_1fr_1fr]">
@@ -23,8 +35,8 @@ export default function Footer() {
           <h4 className="mb-3 text-sm font-semibold">Explore</h4>
           <ul className="space-y-2 text-sm text-muted">
             {explore.map((e) => (
-              <li key={e}>
-                <a href="#" className="hover:text-ink">{e}</a>
+              <li key={e.href}>
+                <Link to={e.href} className="hover:text-ink">{e.label}</Link>
               </li>
             ))}
           </ul>
@@ -32,8 +44,15 @@ export default function Footer() {
 
         <div>
           <h4 className="mb-3 text-sm font-semibold">Keep in the loop</h4>
-          <a href="#" className="text-sm text-brand hover:underline">@gdgoc.ugm</a>
-          <p className="mt-6 text-xs text-muted">Learn together. Build together.</p>
+          <a
+            href={`https://instagram.com/${instagram.replace(/^@/, '')}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-sm text-brand hover:underline"
+          >
+            {instagram}
+          </a>
+          <p className="mt-6 text-xs text-muted">{tagline}</p>
         </div>
       </div>
 

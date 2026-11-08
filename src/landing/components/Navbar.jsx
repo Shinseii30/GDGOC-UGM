@@ -3,16 +3,19 @@ import { NavLink } from 'react-router-dom'
 import { Menu, X } from 'lucide-react'
 import Button from './Button'
 import logoImg from '../../assets/Rectangle.png'
+import { useApi } from '../../lib/useApi'
 
-const links = [
-  { label: 'Home', to: '/' },
-  { label: 'About', to: '/about' },
-  { label: 'Overview', to: '/overview' },
-  { label: 'Contact', to: '/contact' },
+// Dipakai selama /navigation belum selesai dimuat (atau jika API gagal), agar navbar tidak kosong.
+const fallbackLinks = [
+  { label: 'Home', href: '/' },
+  { label: 'About', href: '/about' },
+  { label: 'Overview', href: '/overview' },
+  { label: 'Contact', href: '/contact' },
 ]
 
 export default function Navbar() {
   const [open, setOpen] = useState(false)
+  const { data: links } = useApi('/navigation', { fallback: fallbackLinks })
 
   return (
     <header className="sticky top-0 z-50 border-b border-line bg-white/90 backdrop-blur">
@@ -27,9 +30,9 @@ export default function Navbar() {
 
         <ul className="hidden items-center gap-2 md:flex">
           {links.map((l) => (
-            <li key={l.to}>
+            <li key={l.href}>
               <NavLink
-                to={l.to}
+                to={l.href}
                 className={({ isActive }) =>
                   `rounded-full px-4 py-2 text-sm transition-colors ${
                     isActive ? 'bg-brand-soft font-medium text-brand' : 'text-muted hover:text-ink'
@@ -59,9 +62,9 @@ export default function Navbar() {
         <div className="border-t border-line bg-white px-6 py-4 md:hidden">
           <ul className="flex flex-col gap-1">
             {links.map((l) => (
-              <li key={l.to}>
+              <li key={l.href}>
                 <NavLink
-                  to={l.to}
+                  to={l.href}
                   onClick={() => setOpen(false)}
                   className="block rounded-lg px-3 py-2 text-sm text-muted hover:bg-surface"
                 >
