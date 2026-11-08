@@ -7,7 +7,7 @@ A responsive web application built for the **Google Developer Groups on Campus U
 
 ## 🚀 Live Demo
 
-> 🔗 **[Live URL — deployed on Vercel](https://your-deployed-url.vercel.app)**  
+> 🔗 **[Live URL — deployed on Vercel](https://gdgoc-ugm-swart.vercel.app)**  
 > _(Replace this with your actual Vercel URL after deployment)_
 
 ---
@@ -95,8 +95,8 @@ Data is fetched dynamically from the GDGoC UGM REST API, with proper handling fo
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/YOUR_USERNAME/YOUR_REPO_NAME.git
-cd YOUR_REPO_NAME
+git clone https://github.com/Shinseii30/GDGOC-UGM
+cd GDGOC-UGM
 
 # 2. Install dependencies
 npm install
@@ -170,7 +170,7 @@ Design reference: [Figma — GDGoC Open Recruitment](https://www.figma.com/desig
 
 ## 👤 Author
 
-Made by **[Your Name]** as part of the GDGoC UGM 2026/2027 Open Recruitment — Hacker Track (Front-End).
+Made by Shimizu Shinsei as part of the GDGoC UGM 2026/2027 Open Recruitment — Hacker Track (Front-End).
 
 ---
 
