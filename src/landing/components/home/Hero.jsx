@@ -33,11 +33,11 @@ export default function Hero() {
         </div>
       </div>
 
-      <div className="overflow-hidden rounded-3xl" style={{ height: '1000px' }}>
+      <div className="overflow-hidden rounded-3xl" style={{ aspectRatio: '4/3' }}>
         <img
           src={heroImg}
           alt="Ideas coming together"
-          className="h-full w-full object-contain"
+          className="h-full w-full object-cover"
           style={{ objectPosition: 'center top' }}
         />
       </div>
