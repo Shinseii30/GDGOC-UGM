@@ -17,7 +17,9 @@ export default function Faq() {
           <h2 className="text-4xl font-bold leading-tight tracking-tight">
             Wondering where to begin?
           </h2>
-          <TextLink className="mt-5">Ask a question</TextLink>
+          <TextLink href="/contact?topic=general-inquiry" className="mt-5">
+            Ask a question
+          </TextLink>
         </div>
 
         <div className="divide-y divide-line border-b border-line">

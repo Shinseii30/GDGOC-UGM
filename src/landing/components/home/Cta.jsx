@@ -17,7 +17,7 @@ export default function Cta() {
           </p>
         </div>
         <div className="flex flex-col items-start gap-3 md:items-end">
-          <Button>Explore the overview</Button>
+          <Button href="/overview">Explore the overview</Button>
         </div>
       </div>
     </section>

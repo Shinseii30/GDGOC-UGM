@@ -18,8 +18,10 @@ export default function Hero() {
         </p>
 
         <div className="mt-8 flex flex-wrap gap-3">
-          <Button>Find your learning track</Button>
-          <Button variant="outline">Get to know us</Button>
+          <Button href="/overview#tracks">Find your learning track</Button>
+          <Button variant="outline" href="/about">
+            Get to know us
+          </Button>
         </div>
 
         <div className="mt-6 flex items-center gap-2 text-xs text-muted">

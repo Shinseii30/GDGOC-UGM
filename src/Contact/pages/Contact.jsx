@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { ArrowUpRight, ArrowRight } from 'lucide-react'
 import Eyebrow from '../../landing/components/Eyebrow'
 import { TextLink } from '../../landing/components/Button'
@@ -6,6 +7,7 @@ import Loadable, { Skeleton } from '../../landing/components/Loadable'
 import { useApi } from '../../lib/useApi'
 
 export default function Contact() {
+  const [searchParams] = useSearchParams()
   const categoriesApi = useApi('/inquiry-categories')
   const statsApi = useApi('/stats')
   // Satu state untuk daftar topik di kiri dan dropdown "Inquiry category" di form.
@@ -21,7 +23,9 @@ export default function Contact() {
     message: '',
   })
 
-  const activeCategory = categoryId ?? categoriesApi.data?.[0]?.id ?? ''
+  // Prioritas: pilihan pengguna, lalu ?topic= dari link (mis. /contact?topic=collaboration), lalu kategori pertama.
+  const topicFromUrl = categoriesApi.data?.find((c) => c.id === searchParams.get('topic'))?.id
+  const activeCategory = categoryId ?? topicFromUrl ?? categoriesApi.data?.[0]?.id ?? ''
   const instagram = statsApi.data?.social?.instagram ?? '@gdgoc.ugm'
 
   const handleChange = (e) => {
@@ -270,7 +274,9 @@ export default function Contact() {
             <h2 className="text-4xl font-bold leading-tight tracking-tight">
               Help us understand your idea.
             </h2>
-            <TextLink className="mt-5">Explore the programs first</TextLink>
+            <TextLink href="/overview" className="mt-5">
+              Explore the programs first
+            </TextLink>
           </div>
 
           {/* Right — tips */}

@@ -15,6 +15,14 @@ const formatIcons = {
   'knowledge-sharing': Lightbulb,
 }
 
+// Tombol tiap format membuka form Contact dengan kategori yang paling relevan terpilih.
+const formatTopics = {
+  'study-groups': 'joining-learning',
+  'hands-on-workshops': 'joining-learning',
+  'project-circles': 'collaboration',
+  'knowledge-sharing': 'speaking-sharing',
+}
+
 /* ── component ──────────────────────────────────────────── */
 export default function Overview() {
   const tracksApi = useApi('/tracks')
@@ -24,13 +32,10 @@ export default function Overview() {
   return (
     <>
       {/* ── Hero ── */}
-      <section
-        className="mx-auto max-w-screen-xl items-center gap-6 px-6 py-14 lg:py-16"
-        style={{ display: 'grid', gridTemplateColumns: '3fr 2fr', alignItems: 'center', gap: '24px' }}
-      >
+      <section className="mx-auto grid max-w-screen-xl items-center gap-6 px-6 py-14 lg:grid-cols-[3fr_2fr] lg:py-16">
         <div>
           <Eyebrow>Overview • Programs &amp; learning tracks</Eyebrow>
-          <h1 className="font-bold leading-[1.1] tracking-tight" style={{ fontSize: '4.5rem' }}>
+          <h1 className="text-5xl font-bold leading-[1.1] tracking-tight md:text-6xl lg:text-7xl">
             Find your spark.
             <span className="block text-brand">Build your own path.</span>
           </h1>
@@ -41,7 +46,7 @@ export default function Overview() {
         </div>
 
         {/* Hero image — floating */}
-        <div className="flex items-center justify-end overflow-visible">
+        <div className="mx-auto flex w-full max-w-md items-center justify-center overflow-visible lg:max-w-none lg:justify-end">
           <img
             src={trackResearch}
             alt=""
@@ -76,8 +81,8 @@ export default function Overview() {
       </div>
 
       {/* ── Tracks section ── */}
-      <section className="mx-auto max-w-6xl px-6 py-14">
-        <Eyebrow>{tracksApi.data ? `${tracksApi.data.length} tracks available` : 'Tracks available'}</Eyebrow>
+      <section id="tracks" className="mx-auto max-w-6xl scroll-mt-20 px-6 py-14">
+        <Eyebrow>{tracksApi.data?.length ? `${tracksApi.data.length} tracks available` : 'Tracks available'}</Eyebrow>
         <h2 className="max-w-md text-4xl font-bold leading-tight tracking-tight">
           Three ways in. Plenty of ways forward.
         </h2>
@@ -88,13 +93,17 @@ export default function Overview() {
 
         {/* Track cards */}
         <div className="mt-8 grid gap-5 md:grid-cols-3">
-          <Loadable state={tracksApi} skeleton={<Skeleton count={3} className="h-96 rounded-2xl" />}>
+          <Loadable
+            state={tracksApi}
+            skeleton={<Skeleton count={3} className="h-96 rounded-2xl" />}
+            emptyMessage="No tracks are open right now. Check back soon."
+          >
             {(tracks) => tracks.map((t) => <TrackCard key={t.id} track={t} />)}
           </Loadable>
         </div>
 
         {/* Comparison table */}
-        {tracksApi.data && (
+        {tracksApi.data?.length > 0 && (
           <div className="mt-14">
             <h3 className="text-2xl font-bold tracking-tight">
               From an interest to something you can show.
@@ -127,7 +136,7 @@ export default function Overview() {
       </section>
 
       {/* ── Format section ── */}
-      <section className="bg-surface py-16">
+      <section id="formats" className="scroll-mt-20 bg-surface py-16">
         <div className="mx-auto max-w-6xl px-6">
           <Eyebrow>Learn your way</Eyebrow>
           <h2 className="max-w-lg text-4xl font-bold leading-tight tracking-tight">
@@ -138,7 +147,11 @@ export default function Overview() {
           </p>
 
           <div className="mt-8 grid gap-5 sm:grid-cols-2">
-            <Loadable state={formatsApi} skeleton={<Skeleton count={4} className="h-44 rounded-2xl" />}>
+            <Loadable
+              state={formatsApi}
+              skeleton={<Skeleton count={4} className="h-44 rounded-2xl" />}
+              emptyMessage="Learning formats will be announced soon."
+            >
               {(formats) =>
                 formats.map((f) => {
                   const Icon = formatIcons[f.id] ?? BookOpen
@@ -149,7 +162,9 @@ export default function Overview() {
                       </span>
                       <h3 className="mt-4 font-semibold">{f.name}</h3>
                       <p className="mt-2 text-sm text-muted">{f.description}</p>
-                      <TextLink className="mt-4">{f.cta}</TextLink>
+                      <TextLink href={`/contact?topic=${formatTopics[f.id] ?? 'general-inquiry'}`} className="mt-4">
+                        {f.cta}
+                      </TextLink>
                     </div>
                   )
                 })
@@ -160,13 +175,17 @@ export default function Overview() {
       </section>
 
       {/* ── Journey steps ── */}
-      <section className="mx-auto max-w-6xl px-6 py-16">
+      <section id="journey" className="mx-auto max-w-6xl scroll-mt-20 px-6 py-16">
         <h2 className="text-4xl font-bold leading-tight tracking-tight">
           A journey you can keep building on.
         </h2>
 
         <div className="mt-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
-          <Loadable state={journeyApi} skeleton={<Skeleton count={4} className="h-28 rounded-xl" />}>
+          <Loadable
+            state={journeyApi}
+            skeleton={<Skeleton count={4} className="h-28 rounded-xl" />}
+            emptyMessage="The learning journey will be shared soon."
+          >
             {(steps) =>
               steps.map((s) => (
                 <div key={s.id}>
@@ -183,7 +202,7 @@ export default function Overview() {
       </section>
 
       {/* ── New to tech banner ── */}
-      <section className="mx-auto max-w-6xl px-6 pb-6">
+      <section id="start" className="mx-auto max-w-6xl scroll-mt-20 px-6 pb-6">
         <div className="grid overflow-hidden rounded-3xl bg-yellow-50 md:grid-cols-2">
           <div className="border-r border-yellow-100 p-8 md:p-10">
             <p className="text-2xl font-bold leading-snug md:text-3xl">
@@ -197,7 +216,9 @@ export default function Overview() {
               You don't need to know anything in particular to get started. Each track can begin with
               curiosity. We'll help you find what makes sense for where you are right now.
             </p>
-            <TextLink className="mt-4">Available and started</TextLink>
+            <TextLink href="/contact?topic=joining-learning" className="mt-4">
+              Available and started
+            </TextLink>
           </div>
         </div>
       </section>
@@ -217,8 +238,8 @@ export default function Overview() {
             </p>
           </div>
           <div className="flex flex-col items-start gap-3 md:items-end">
-            <Button>Find the overview</Button>
-            <TextLink>Talk to the community</TextLink>
+            <Button href="/overview#tracks">Find the overview</Button>
+            <TextLink href="/contact">Talk to the community</TextLink>
           </div>
         </div>
       </section>
