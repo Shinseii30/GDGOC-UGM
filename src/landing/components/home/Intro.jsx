@@ -13,7 +13,9 @@ export default function Intro() {
           <br />
           Finding your people.
         </h2>
-        <TextLink className="mt-6">More about GDGoC UGM</TextLink>
+        <TextLink href="/about" className="mt-6">
+          More about GDGoC UGM
+        </TextLink>
       </div>
 
       <div className="space-y-5 text-muted">

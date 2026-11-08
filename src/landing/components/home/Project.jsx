@@ -54,7 +54,9 @@ export default function Project() {
           Bring research, design, and development together. Try an idea, get feedback, and make the
           next version better.
         </p>
-        <TextLink className="mt-5">Explore project-based learning</TextLink>
+        <TextLink href="/overview#formats" className="mt-5">
+          Explore project-based learning
+        </TextLink>
       </div>
     </section>
   )

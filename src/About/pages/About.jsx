@@ -117,7 +117,9 @@ export default function About() {
               You can be learning one day and helping someone else the next. A
               community grows through both.
             </p>
-            <TextLink className="mt-6">Let's talk about getting involved</TextLink>
+            <TextLink href="/contact?topic=joining-learning" className="mt-6">
+              Let's talk about getting involved
+            </TextLink>
           </div>
 
           {/* Right */}
@@ -170,8 +172,8 @@ export default function About() {
             </p>
           </div>
           <div className="flex flex-col items-start gap-3 md:items-end">
-            <Button>Explore the overview</Button>
-            <TextLink>Talk to the community</TextLink>
+            <Button href="/overview">Explore the overview</Button>
+            <TextLink href="/contact">Talk to the community</TextLink>
           </div>
         </div>
       </section>

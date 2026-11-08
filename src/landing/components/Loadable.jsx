@@ -17,12 +17,21 @@ export function ErrorMessage({ onRetry }) {
   )
 }
 
+export function EmptyMessage({ children = 'Nothing to show here yet. Check back soon.' }) {
+  return (
+    <div className="col-span-full rounded-2xl border border-dashed border-line bg-white p-5 text-sm text-muted">
+      {children}
+    </div>
+  )
+}
+
 /**
  * Render data dari useApi: skeleton saat loading, pesan + "Try again" saat gagal,
- * dan `children(data)` begitu data tersedia.
+ * pesan kosong saat API mengembalikan array kosong, dan `children(data)` bila ada data.
  */
-export default function Loadable({ state, skeleton, children }) {
+export default function Loadable({ state, skeleton, emptyMessage, children }) {
   const { data, error, retry } = state
+  if (Array.isArray(data) && data.length === 0) return <EmptyMessage>{emptyMessage}</EmptyMessage>
   if (data != null) return children(data)
   if (error) return <ErrorMessage onRetry={retry} />
   return skeleton ?? <Skeleton />

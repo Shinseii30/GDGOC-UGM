@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { NavLink } from 'react-router-dom'
+import { NavLink, useLocation } from 'react-router-dom'
 import { Menu, X } from 'lucide-react'
 import Button from './Button'
 import logoImg from '../../assets/Rectangle.png'
@@ -14,7 +14,12 @@ const fallbackLinks = [
 ]
 
 export default function Navbar() {
-  const [open, setOpen] = useState(false)
+  const { key } = useLocation()
+  // Menu mobile menyimpan "terbuka pada lokasi mana"; begitu pindah halaman/anchor (key berubah)
+  // menunya otomatis dianggap tertutup, tanpa effect (mis. setelah klik "Find your track").
+  const [openAt, setOpenAt] = useState(null)
+  const open = openAt === key
+  const setOpen = (value) => setOpenAt(value ? key : null)
   const { data: links } = useApi('/navigation', { fallback: fallbackLinks })
 
   return (
@@ -46,7 +51,7 @@ export default function Navbar() {
         </ul>
 
         <div className="hidden md:block">
-          <Button>Find your track</Button>
+          <Button href="/overview#tracks">Find your track</Button>
         </div>
 
         <button
@@ -73,7 +78,9 @@ export default function Navbar() {
               </li>
             ))}
           </ul>
-          <Button className="mt-4 w-full justify-center">Find your track</Button>
+          <Button href="/overview#tracks" className="mt-4 w-full justify-center">
+            Find your track
+          </Button>
         </div>
       )}
     </header>
