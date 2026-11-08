@@ -3,7 +3,7 @@ import Navbar from './landing/components/Navbar'
 import Footer from './landing/components/Footer'
 import Home from './landing/pages/Home'
 import About from './About/pages/About'
-import Overview from './Overview/pages/Overview'
+import Overview from './overview/pages/Overview'
 import Contact from './Contact/pages/Contact'
 
 export default function App() {

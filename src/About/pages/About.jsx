@@ -1,51 +1,22 @@
 import { BookOpen, Users, Code2, Heart } from 'lucide-react'
 import Eyebrow from '../../landing/components/Eyebrow'
 import Button, { TextLink } from '../../landing/components/Button'
+import Loadable, { Skeleton } from '../../landing/components/Loadable'
+import { useApi } from '../../lib/useApi'
 import communityImg from '../../assets/Community mark artwork.png'
 
-const values = [
-  {
-    icon: <BookOpen size={18} />,
-    color: 'bg-brand',
-    title: 'Stay curious',
-    desc: 'Ask the extra question. Be willing to learn something outside your comfort zone.',
-  },
-  {
-    icon: <Users size={18} />,
-    color: 'bg-[#ea4335]',
-    title: 'Make room',
-    desc: 'Welcome different perspectives, respect each other, and help people find their voice.',
-  },
-  {
-    icon: <Code2 size={18} />,
-    color: 'bg-[#fbbc04]',
-    title: 'Learn by building',
-    desc: 'Try a small experiment. Share the rough version. Let feedback guide what comes next.',
-  },
-  {
-    icon: <Heart size={18} />,
-    color: 'bg-[#34a853]',
-    title: 'Give something back',
-    desc: 'Share a resource, explain what clicked, or help someone take their next step.',
-  },
-]
-
-const ways = [
-  {
-    title: 'Come as a learner',
-    desc: "Explore a topic, join a discussion, and ask the question that's been on your mind.",
-  },
-  {
-    title: 'Grow as a collaborator',
-    desc: "Work with people whose skills complement yours. Discover what you can build together.",
-  },
-  {
-    title: 'Give back as a contributor',
-    desc: 'Share knowledge, support a learning session, or bring an idea for the community.',
-  },
-]
+// Ikon lucide dipetakan dari id nilai komunitas (API hanya mengirim emoji dan warna hex).
+const valueIcons = {
+  'stay-curious': BookOpen,
+  'make-room': Users,
+  'learn-by-building': Code2,
+  'give-something-back': Heart,
+}
 
 export default function About() {
+  const valuesApi = useApi('/values')
+  const rolesApi = useApi('/roles')
+
   return (
     <>
       {/* ── Hero ── */}
@@ -113,14 +84,23 @@ export default function About() {
         </h2>
 
         <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {values.map((v) => (
-            <div key={v.title} className="rounded-2xl border border-line bg-white p-5">
-              <div className={`mb-3 h-0.5 w-8 rounded-full ${v.color}`} />
-              <span className="text-muted">{v.icon}</span>
-              <h3 className="mt-3 font-semibold">{v.title}</h3>
-              <p className="mt-1 text-sm text-muted">{v.desc}</p>
-            </div>
-          ))}
+          <Loadable state={valuesApi} skeleton={<Skeleton count={4} className="h-40 rounded-2xl" />}>
+            {(values) =>
+              values.map((v) => {
+                const Icon = valueIcons[v.id] ?? BookOpen
+                return (
+                  <div key={v.id} className="rounded-2xl border border-line bg-white p-5">
+                    <div className="mb-3 h-0.5 w-8 rounded-full" style={{ backgroundColor: v.color }} />
+                    <span className="text-muted">
+                      <Icon size={18} />
+                    </span>
+                    <h3 className="mt-3 font-semibold">{v.title}</h3>
+                    <p className="mt-1 text-sm text-muted">{v.description}</p>
+                  </div>
+                )
+              })
+            }
+          </Loadable>
         </div>
       </section>
 
@@ -142,12 +122,16 @@ export default function About() {
 
           {/* Right */}
           <div className="space-y-6">
-            {ways.map((w) => (
-              <div key={w.title} className="border-b border-line pb-6 last:border-0 last:pb-0">
-                <h3 className="font-semibold">{w.title}</h3>
-                <p className="mt-1 text-sm text-muted">{w.desc}</p>
-              </div>
-            ))}
+            <Loadable state={rolesApi} skeleton={<Skeleton count={3} className="h-16 rounded-xl" />}>
+              {(roles) =>
+                roles.map((r) => (
+                  <div key={r.id} className="border-b border-line pb-6 last:border-0 last:pb-0">
+                    <h3 className="font-semibold">{r.title}</h3>
+                    <p className="mt-1 text-sm text-muted">{r.description}</p>
+                  </div>
+                ))
+              }
+            </Loadable>
           </div>
         </div>
       </section>
